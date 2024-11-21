@@ -21,7 +21,11 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+	ringbuf_u8_s ringbuffer_UART2_RX;
+	uint8_t buffer_UART2_RX[BUFFER_SIZE];
 
+	ringbuf_u8_s ringbuffer_UART2_TX;
+	uint8_t buffer_UART2_TX[BUFFER_SIZE];
 /* USER CODE END 0 */
 
 /* USART1 init function */
@@ -128,31 +132,76 @@ void MX_USART2_UART_Init(void)
   LL_USART_EnableDirectionRx(USART2);
   LL_USART_Enable(USART2);
   /* USER CODE BEGIN USART2_Init 2 */
-
+  LL_USART_EnableIT_RXNE(USART2);
+  //LL_USART_EnableIT_TXE(USART2);
 
   /* USER CODE END USART2_Init 2 */
 
 }
 
 /* USER CODE BEGIN 1 */
+
+void InitRingbuffer(void){
+	ringbuf_u8_init(&ringbuffer_UART2_RX, buffer_UART2_RX, BUFFER_SIZE);
+	ringbuf_u8_init(&ringbuffer_UART2_TX, buffer_UART2_TX, BUFFER_SIZE);
+}
+
+
 void USART2_IRQHandler(void)
 {
-	if(LL_USART_IsEnabledIT_TXE(USART2) && LL_USART_IsActiveFlag_TXE(USART2))
+	if(LL_USART_IsActiveFlag_TXE(USART2))
 	{
-		LL_mDelay(1);
+		uint8_t tx_data;
+		if(ringbuf_u8_dequeue(&ringbuffer_UART2_TX, &tx_data) != 1){
+			LL_USART_DisableIT_TXE(USART2);
+		}else{
+			LL_USART_TransmitData8(USART2, tx_data);
+		}
 
 	}
-	if(LL_USART_IsEnabledIT_RXNE(USART2) && LL_USART_IsActiveFlag_RXNE(USART2))
+	if(LL_USART_IsActiveFlag_RXNE(USART2))
 	{
-
-		LL_mDelay(1);
-	}
-	if(LL_USART_IsEnabledIT_IDLE(USART2) && LL_USART_IsActiveFlag_IDLE(USART2))
-	{
-		LL_USART_ClearFlag_IDLE(USART2);
-
-		//obsługa zdarzenia po odebraniu całej ramki
+		USART2_ReadData();
 	}
 
+}
+
+
+void USART2_ReadData(void)
+{
+    uint8_t rx_data = LL_USART_ReceiveData8(USART2);
+    if(rx_data == '\r' || rx_data == '\n') // Enter pressed
+    {
+    	USART2_HandleData();
+    	return;
+    }
+    else if(rx_data == '\177') // backspace pressed
+    {
+    	ringbuf_u8_dequeue(&ringbuffer_UART2_RX,NULL);
+    }
+    else
+    {
+        ringbuf_u8_queue(&ringbuffer_UART2_RX,rx_data);
+    }
+    ringbuf_u8_queue(&ringbuffer_UART2_TX,rx_data);
+    LL_USART_EnableIT_TXE(USART2);
+}
+
+void USART2_SendData(uint8_t* message,uint8_t size)
+{
+
+	for (size_t i = 0; i < size; i++) {
+	    ringbuf_u8_queue(&ringbuffer_UART2_TX, message[i]);
+	}
+	LL_USART_EnableIT_TXE(USART2);
+}
+
+void USART2_HandleData(void)
+{
+	uint8_t  size = ringbuffer_UART2_RX.head-ringbuffer_UART2_RX.tail;
+	uint8_t data[BUFFER_SIZE] = "";
+	ringbuf_u8_dequeue_array(&ringbuffer_UART2_RX, data, size);
+
+	HandleCommand(data);
 }
 /* USER CODE END 1 */

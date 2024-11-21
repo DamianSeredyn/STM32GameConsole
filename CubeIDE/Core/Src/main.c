@@ -97,7 +97,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+   InitRingbuffer();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,6 +109,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+
 }
 
 /**
