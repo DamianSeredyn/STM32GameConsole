@@ -169,7 +169,7 @@ void USART2_IRQHandler(void)
 
 void USART2_ReadData(void)
 {
-    uint8_t rx_data = LL_USART_ReceiveData8(USART2);
+	uint8_t rx_data = LL_USART_ReceiveData8(USART2);
     if(rx_data == '\r' || rx_data == '\n') // Enter pressed
     {
     	USART2_HandleData();
