@@ -198,6 +198,11 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32l4xx.s).                    */
 /******************************************************************************/
 
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
