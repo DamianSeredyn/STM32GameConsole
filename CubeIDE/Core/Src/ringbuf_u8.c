@@ -119,3 +119,20 @@ size_t ringbuf_u8_nelems(ringbuf_u8_s *ctx) {
 
   return ((ctx->head - ctx->tail) & ctx->mask);
 }
+
+bool ringbuf_u8_take_last(ringbuf_u8_s *ctx, uint8_t *data) {
+  ASSERT(ctx);
+  ASSERT(ctx->buffer);
+  ASSERT(ctx->mask);
+  ASSERT(data);
+
+  bool result = false;
+
+  if (!ringbuf_u8_is_empty(ctx)) {
+    *data = ctx->buffer[ctx->head];
+    ctx->head--;
+    ctx->head &= ctx->mask;
+    result = true;
+  }
+  return result;
+}

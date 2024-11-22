@@ -22,10 +22,10 @@
 
 /* USER CODE BEGIN 0 */
 	ringbuf_u8_s ringbuffer_UART2_RX;
-	uint8_t buffer_UART2_RX[BUFFER_SIZE];
+	uint8_t buffer_UART2_RX[BUFFER_SIZE] = {0};
 
 	ringbuf_u8_s ringbuffer_UART2_TX;
-	uint8_t buffer_UART2_TX[BUFFER_SIZE];
+	uint8_t buffer_UART2_TX[BUFFER_SIZE] = {0};
 /* USER CODE END 0 */
 
 /* USART1 init function */
@@ -147,9 +147,10 @@ void InitRingbuffer(void){
 }
 
 
+
 void USART2_IRQHandler(void)
 {
-	if(LL_USART_IsActiveFlag_TXE(USART2))
+	if(LL_USART_IsEnabledIT_TXE(USART2) && LL_USART_IsActiveFlag_TXE(USART2))
 	{
 		uint8_t tx_data;
 		if(ringbuf_u8_dequeue(&ringbuffer_UART2_TX, &tx_data) != 1){
@@ -159,7 +160,7 @@ void USART2_IRQHandler(void)
 		}
 
 	}
-	if(LL_USART_IsActiveFlag_RXNE(USART2))
+	if(LL_USART_IsEnabledIT_RXNE(USART2) &&LL_USART_IsActiveFlag_RXNE(USART2))
 	{
 		USART2_ReadData();
 	}
@@ -177,7 +178,7 @@ void USART2_ReadData(void)
     }
     else if(rx_data == '\177') // backspace pressed
     {
-    	ringbuf_u8_dequeue(&ringbuffer_UART2_RX,NULL);
+    	ringbuf_u8_take_last(&ringbuffer_UART2_RX,NULL);
     }
     else if(rx_data != '\27')
     {

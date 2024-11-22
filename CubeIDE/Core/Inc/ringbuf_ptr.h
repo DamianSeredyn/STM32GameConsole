@@ -100,6 +100,7 @@ bool ringbuf_ptr_is_full(ringbuf_ptr_s *ctx);
  */
 size_t ringbuf_ptr_nelems(ringbuf_ptr_s *ctx);
 
+
 #ifdef __cplusplus
 }
 #endif
