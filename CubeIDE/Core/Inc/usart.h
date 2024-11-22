@@ -35,7 +35,7 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-#define BUFFER_SIZE 128
+#define BUFFER_SIZE 256
 
 /* USER CODE END Private defines */
 void InitRingbuffer(void);
