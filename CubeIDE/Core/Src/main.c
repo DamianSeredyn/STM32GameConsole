@@ -98,9 +98,15 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
    InitRingbuffer();
+
    MX_I2C1_Init();
+
    MX_SPI2_Init();
    spi_init_interupts();
+
+   MX_TIM2_Init();
+
+   PlayMusic(0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
