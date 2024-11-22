@@ -10,7 +10,7 @@
 
 void HandleCommand(uint8_t* data)
 {
-	uint8_t response[BUFFER_SIZE-1]= ""; // -1 because of structure of buffer!
+	uint8_t response[BUFFER_SIZE-1]= {0}; // -1 because of structure of buffer!
 	uint8_t decomposedData[MAX_CONSOLE_WORDS][BUFFER_SIZE_COMMAND]= {0};
 	split_data_into_words(data,decomposedData);
 	switch (hash_command(decomposedData[0]))
@@ -35,7 +35,7 @@ void HandleCommand(uint8_t* data)
 	        		strcpy((char*)response, "Hi there! Need help? Type !help or simply enter a command.\r\n");
 	            break;
 	        default:
-	            strcpy((char*)response, "\r\nError! Unknown command.\r\n");
+	            snprintf((char*)response,BUFFER_SIZE, "\r\nError! '%s' -> Unknown command.\r\n"  , (char*)decomposedData[0]);
 	            break;
 	}
 

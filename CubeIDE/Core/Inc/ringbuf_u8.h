@@ -100,6 +100,8 @@ bool ringbuf_u8_is_full(ringbuf_u8_s *ctx);
  */
 size_t ringbuf_u8_nelems(ringbuf_u8_s *ctx);
 
+bool ringbuf_u8_take_last(ringbuf_u8_s *ctx, uint8_t *data);
+
 #ifdef __cplusplus
 }
 #endif
