@@ -41,6 +41,7 @@ extern "C" {
 #include "stm32l4xx_ll_gpio.h"
 #include "stm32l4xx_ll_spi.h"
 #include "stm32l4xx_ll_i2c.h"
+#include "stm32l4xx_ll_tim.h"
 
 
 #if defined(USE_FULL_ASSERT)
@@ -52,6 +53,8 @@ extern "C" {
 #include "usart.h"
 #include "i2c.h"
 #include "spi.h"
+#include "Tim.h"
+#include "buzzer.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
