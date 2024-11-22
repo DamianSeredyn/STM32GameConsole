@@ -75,6 +75,5 @@ void split_data_into_words(uint8_t* data, uint8_t words[MAX_CONSOLE_WORDS][BUFFE
     }
 
     strcpy((char*)words[wordCount], (char*)word);
-    LL_mDelay(25); // time for strcpy() to write text to arrays
 
 }

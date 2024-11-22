@@ -170,7 +170,7 @@ void USART2_IRQHandler(void)
 void USART2_ReadData(void)
 {
 	uint8_t rx_data = LL_USART_ReceiveData8(USART2);
-    if(rx_data == '\r' || rx_data == '\n') // Enter pressed
+    if(rx_data == '\r') // Enter pressed
     {
     	USART2_HandleData();
     	return;
@@ -179,7 +179,7 @@ void USART2_ReadData(void)
     {
     	ringbuf_u8_dequeue(&ringbuffer_UART2_RX,NULL);
     }
-    else
+    else if(rx_data != '\27')
     {
         ringbuf_u8_queue(&ringbuffer_UART2_RX,rx_data);
     }
