@@ -75,7 +75,6 @@ void spi_write_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
 {
 	uint32_t count = 0;
 
-	LL_SPI_Enable(spi);
 
 	while(count < size)
 	{
@@ -93,7 +92,6 @@ void spi_write_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
 	while (LL_SPI_IsActiveFlag_BSY(spi) != 0)
 		;
 
-	LL_SPI_Disable(spi);
 
 	while (LL_SPI_GetRxFIFOLevel(spi) != LL_SPI_RX_FIFO_EMPTY)
 	{
@@ -107,7 +105,6 @@ void spi_read_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
 {
 	uint32_t count = 0;
 
-	LL_SPI_Enable(spi);
 
 	while(count < size)
 	{
@@ -130,7 +127,6 @@ void spi_read_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
 	while (LL_SPI_IsActiveFlag_BSY(spi) != 0)
 		;
 
-	LL_SPI_Disable(spi);
 
 	while (LL_SPI_GetRxFIFOLevel(spi) != LL_SPI_RX_FIFO_EMPTY)
 	{

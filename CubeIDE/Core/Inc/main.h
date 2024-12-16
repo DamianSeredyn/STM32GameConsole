@@ -55,6 +55,7 @@ extern "C" {
 #include "spi.h"
 #include "Tim.h"
 #include "buzzer.h"
+#include "led_display.h"
 #include "ext_buttons.h"
 /* USER CODE END Includes */
 
