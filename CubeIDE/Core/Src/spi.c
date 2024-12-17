@@ -16,6 +16,15 @@ static buffer_f tx_buffer = {0};
 
 void MX_SPI2_Init(void)
 {
+
+  /**SPI2 GPIO Configuration
+   *
+  PB11   ------> SPI2_NSS2
+  PB12   ------> SPI2_NSS
+  PB13   ------> SPI2_SCK
+  PB14   ------> SPI2_MISO
+  PB15   ------> SPI2_MOSI
+  */
 	LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
@@ -46,7 +55,7 @@ void MX_SPI2_Init(void)
 		LL_SPI_SetClockPolarity(spi, LL_SPI_POLARITY_LOW);
 		LL_SPI_SetClockPhase(spi, LL_SPI_PHASE_1EDGE);
 		LL_SPI_SetNSSMode(spi, LL_SPI_NSS_SOFT);
-		LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV8);
+		LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV256); // changed to low value for SD card, might be changed in the future
 		LL_SPI_SetTransferBitOrder(spi, LL_SPI_MSB_FIRST);
 		LL_SPI_SetDataWidth(spi, LL_SPI_DATAWIDTH_8BIT);
 		LL_SPI_SetStandard(spi, LL_SPI_PROTOCOL_MOTOROLA);
