@@ -109,6 +109,7 @@ int main(void)
    MX_TIM2_Init();
 
 
+   ILI9486_ReadStatus();
    ILI9486_ReadID();
   /* USER CODE END 2 */
 

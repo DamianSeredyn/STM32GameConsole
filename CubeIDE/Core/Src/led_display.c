@@ -6,26 +6,30 @@
  */
 #include "led_display.h"
 
-static uint8_t SPI_ILI9486_Read_Data(uint8_t reg)
+
+static void SPI_ILI9486_WriteReg(uint8_t Reg)
 {
-	uint8_t result;
-
-
-	SPI_ILI9486_CS_low();
 	SPI_ILI9486_DC_low();
-	spi_write_data(&reg, 1,SPI1);
-	SPI_ILI9486_DC_High();
-	spi_read_data(&result, 1,SPI1);
-	SPI_ILI9486_CS_High();
-	return result;
+	SPI_ILI9486_CS_low();
+	spi_write_data(&Reg,1,SPI1);
+    SPI_ILI9486_CS_High();
 }
-static void SPI_ILI9486_Write_Data(uint8_t reg, uint8_t val)
+
+static void SPI_ILI9486_WriteData(uint8_t Data)
+{
+	SPI_ILI9486_DC_High();
+    SPI_ILI9486_CS_low();
+    uint8_t highByte = (uint8_t)(Data >> 8);
+    spi_write_data(&highByte, 1, SPI1);
+    uint8_t lowByte = (uint8_t)(Data & 0xFF);
+    spi_write_data(&lowByte, 1, SPI1);
+    SPI_ILI9486_CS_High();
+}
+static void SPI_ILI9486_Read_Data(uint8_t* result, uint8_t size)
 {
 	SPI_ILI9486_CS_low();
-	uint8_t tmp[2];
-	tmp[0] = reg;
-	tmp[1] = val;
-	spi_write_data(tmp, 2,SPI1);
+	SPI_ILI9486_DC_High();
+	spi_read_data(result, size,SPI1);
 	SPI_ILI9486_CS_High();
 }
 
@@ -109,6 +113,25 @@ void ILI9486_Init(void)
 	LL_GPIO_SetOutputPin(GPIOA, ILI9486_DC_PIN);
 	LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
 	LL_GPIO_SetOutputPin(GPIOC, ILI9486_BL_PIN);
+
+
+	SPI_ILI9486_WriteReg(0x11); // Sleep OUT
+    LL_mDelay(120);
+
+    SPI_ILI9486_WriteReg(0x3A); // Pixel Format
+    SPI_ILI9486_WriteData(0x55);    // 16-bit RGB 565
+
+    SPI_ILI9486_WriteReg(0x36); // Memory Access Control
+    SPI_ILI9486_WriteData(0x48);    // BGR Order, MX
+
+    SPI_ILI9486_WriteReg(0xC0); // Power Control 1
+    SPI_ILI9486_WriteData(0x0D);
+
+    SPI_ILI9486_WriteReg(0xC5); // VCOM Control
+    SPI_ILI9486_WriteData(0x3E);
+
+    SPI_ILI9486_WriteReg(0x29); // Display ON
+    LL_mDelay(20);
 }
 
 void SPI_ILI9486_CS_low(void)
@@ -139,15 +162,17 @@ void ILI9486_Reset(void)
 
 uint8_t ILI9486_ReadStatus(void)
 {
-	uint8_t status =0;
-	status = SPI_ILI9486_Read_Data(ILI9486_READ_STATUS);
+	uint8_t status[5] = {0};
+	SPI_ILI9486_WriteReg(ILI9486_READ_STATUS);
+	SPI_ILI9486_Read_Data(status,5);
 	return status;
 }
 
 uint8_t ILI9486_ReadID(void)
 {
-	uint8_t id =0;
-	id = SPI_ILI9486_Read_Data(ILI9486_READ_ID);
+	uint8_t id[4] = {0};
+	SPI_ILI9486_WriteReg(ILI9486_READ_ID);
+	SPI_ILI9486_Read_Data(id,4);
 	return id;
 }
 
