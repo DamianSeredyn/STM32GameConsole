@@ -101,7 +101,8 @@ int main(void)
    MX_I2C1_Init();
 
    SPI_ILI9486_init();
-   ILI9486_Init();
+   LCD_SCAN_DIR Lcd_ScanDir = SCAN_DIR_DFT;
+   ILI9486_Init(Lcd_ScanDir);
 
    MX_SPI2_Init();
    spi_init_interupts();
@@ -109,8 +110,6 @@ int main(void)
    MX_TIM2_Init();
 
 
-   ILI9486_ReadStatus();
-   ILI9486_ReadID();
   /* USER CODE END 2 */
 
   /* Infinite loop */
