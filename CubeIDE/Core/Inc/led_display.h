@@ -11,7 +11,6 @@
 
 #include "main.h"
 #include "fonts.h"
-
 #define	COLOR				uint16_t		//The variable type of the color (unsigned short)
 #define	POINT				uint16_t		//The type of coordinate (unsigned short)
 #define	LENGTH				uint16_t		//The type of coordinate (unsigned short)
@@ -57,10 +56,16 @@ void SPI_ILI9486_DC_low(void);
 void SPI_ILI9486_DC_High(void);
 void ILI9486_Init(LCD_SCAN_DIR LCD_ScanDir);
 void ILI9486_Reset(void);
+
 uint8_t ILI9486_ReadID(void);
 uint8_t ILI9486_ReadStatus(void);
 
-void Example_DrawRectangle(void);
+void LCD_SetWindow(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend);
+void LCD_SetCursor(POINT Xpoint, POINT Ypoint);
+void LCD_SetColor(COLOR Color ,POINT Xpoint, POINT Ypoint);
+void LCD_SetPointlColor(POINT Xpoint, POINT Ypoint, COLOR Color);
+void LCD_SetArealColor(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend,COLOR  Color);
+void LCD_Clear(COLOR  Color);
 
 
 #define ILI9486_BL_PIN LL_GPIO_PIN_7
