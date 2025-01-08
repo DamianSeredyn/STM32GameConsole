@@ -98,15 +98,18 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
    InitRingbuffer();
-
    MX_I2C1_Init();
+
+   SPI_ILI9486_init();
+   LCD_SCAN_DIR Lcd_ScanDir = SCAN_DIR_DFT;
+   ILI9486_Init(Lcd_ScanDir);
 
    MX_SPI2_Init();
    spi_init_interupts();
 
    MX_TIM2_Init();
 
-   PlayMusic(0);
+   GUI_ShowTest();
   /* USER CODE END 2 */
 
   /* Infinite loop */

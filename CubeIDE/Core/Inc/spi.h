@@ -15,7 +15,11 @@ typedef struct
 	uint32_t count;
 
 } buffer_f;
-
+typedef enum
+{
+	TRANSMIT = 0,
+	RECEIVE = 1
+}transfer_type_t;
 typedef struct
 {
 uint8_t* data_ptr;
@@ -25,19 +29,14 @@ uint32_t count;
 void MX_SPI2_Init(void);
 
 void spi_init_interupts(void);
-void spi_write_data_it(uint8_t *data, uint32_t size);
-void spi_read_data_it(uint8_t *data, uint32_t size);
-void spi_transmit_callback(void);
-void spi_receive_callback(void);
-void spi_cs_set_high(void);
-void spi_cs_set_low(void);
-void spi_cs2_set_high(void);
-void spi_cs2_set_low(void);
-void spi_cs3_set_high(void);
-void spi_cs3_set_low(void);
-
-void spi_write_data(uint8_t *data, uint32_t size);
-void spi_read_data(uint8_t *data, uint32_t size);
+void spi_write_data_it(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
+void spi_read_data_it(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
+void spi_transmit_callback(SPI_TypeDef * spi);
+void spi_receive_callback(SPI_TypeDef * spi);
+void spi_it_transmit_callback(SPI_TypeDef * spi);
+void spi_it_receive_callback( SPI_TypeDef * spi);
+void spi_write_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
+void spi_read_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
 
 
 #endif /* INC_SPI_H_ */
