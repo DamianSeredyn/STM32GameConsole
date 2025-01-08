@@ -109,7 +109,7 @@ int main(void)
 
    MX_TIM2_Init();
 
-
+   GUI_ShowTest();
 
    BUTTON_EXTI_Init();
 

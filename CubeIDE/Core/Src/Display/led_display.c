@@ -48,6 +48,88 @@ static void SPI_ILI9486_Read_Data(uint8_t* result, uint8_t size)
 	spi_read_data(result, size,SPI1);
 	SPI_ILI9486_CS_High();
 }
+
+void SPI_ILI9486_init(void)
+{
+
+
+
+LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+LL_GPIO_InitTypeDef GPIO_InitStructB = {0};
+/* Peripheral clock enable */
+LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
+
+LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
+LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
+/**SPI1 GPIO Configuration
+PA5   ------> SPI1_SCK
+PA6   ------> SPI1_MISO
+PA7   ------> SPI1_MOSI
+*/
+GPIO_InitStruct.Pin = LL_GPIO_PIN_5|LL_GPIO_PIN_6|LL_GPIO_PIN_7;
+GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+GPIO_InitStructB.Pin = LL_GPIO_PIN_6;
+GPIO_InitStructB.Mode = LL_GPIO_MODE_OUTPUT;
+GPIO_InitStructB.Speed = LL_GPIO_SPEED_FREQ_LOW;
+GPIO_InitStructB.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+GPIO_InitStructB.Pull = LL_GPIO_PULL_NO;
+LL_GPIO_Init(GPIOB, &GPIO_InitStructB);
+
+SPI_ILI9486_CS_High();
+
+
+SPI_TypeDef * spi = SPI1;
+
+LL_SPI_Disable(spi);
+LL_SPI_SetMode(spi, LL_SPI_MODE_MASTER);
+LL_SPI_SetTransferDirection(spi, LL_SPI_FULL_DUPLEX);
+LL_SPI_SetClockPolarity(spi, LL_SPI_POLARITY_LOW);
+LL_SPI_SetClockPhase(spi, LL_SPI_PHASE_1EDGE);
+LL_SPI_SetNSSMode(spi, LL_SPI_NSS_SOFT);
+LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV2);
+LL_SPI_SetTransferBitOrder(spi, LL_SPI_MSB_FIRST);
+LL_SPI_SetDataWidth(spi, LL_SPI_DATAWIDTH_8BIT);
+LL_SPI_SetStandard(spi, LL_SPI_PROTOCOL_MOTOROLA);
+LL_SPI_SetRxFIFOThreshold(spi, LL_SPI_RX_FIFO_TH_QUARTER);
+LL_SPI_Enable(spi);
+
+
+
+}
+void SPI_ILI9486_CS_low(void)
+{
+	LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_6);
+}
+void SPI_ILI9486_CS_High(void)
+{
+	LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_6);
+}
+
+void SPI_ILI9486_DC_low(void)
+{
+	LL_GPIO_ResetOutputPin(ILI9486_DC_PORT, ILI9486_DC_PIN);
+}
+void SPI_ILI9486_DC_High(void)
+{
+	LL_GPIO_SetOutputPin(ILI9486_DC_PORT, ILI9486_DC_PIN);
+}
+
+void ILI9486_Reset(void)
+{
+    LL_GPIO_ResetOutputPin(GPIOA, ILI9486_RST_PIN);
+    LL_mDelay(10);
+    LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
+    LL_mDelay(120);
+}
+
+
 static void LCD_InitReg(void)
 {
     SPI_ILI9486_WriteReg(0XF9);
@@ -63,15 +145,15 @@ static void LCD_InitReg(void)
     SPI_ILI9486_WriteData(0x00);
 
     SPI_ILI9486_WriteReg(0xC2);	//Normal mode, increase can change the display quality, while increasing power consumption
-    SPI_ILI9486_WriteData(0x33);
+    SPI_ILI9486_WriteData(0x44);
 
     SPI_ILI9486_WriteReg(0XC5);
     SPI_ILI9486_WriteData(0x00);
     SPI_ILI9486_WriteData(0x28);//VCM_REG[7:0]. <=0X80.
 
     SPI_ILI9486_WriteReg(0xB1);//Sets the frame frequency of full color normal mode
-    SPI_ILI9486_WriteData(0xA0);//0XB0 =70HZ, <=0XB0.0xA0=62HZ
-    SPI_ILI9486_WriteData(0x11);
+    SPI_ILI9486_WriteData(0xE0);//0XB0 =70HZ, <=0XB0.0xA0=62HZ
+    SPI_ILI9486_WriteData(0x1F);
 
     SPI_ILI9486_WriteReg(0xB4);
     SPI_ILI9486_WriteData(0x02); //2 DOT FRAME MODE,F<=70HZ.
@@ -154,6 +236,13 @@ static void LCD_InitReg(void)
     SPI_ILI9486_WriteData(0x55);
 
 }
+
+/********************************************************************************
+function:	Set the display scan and color transfer modes
+parameter:
+		Scan_dir   :   Scan direction
+		Colorchose :   RGB or GBR color format
+********************************************************************************/
 void LCD_SetGramScanWay(LCD_SCAN_DIR Scan_dir)
 {
     uint16_t MemoryAccessReg_Data = 0; //addr:0x36
@@ -216,61 +305,10 @@ void LCD_SetGramScanWay(LCD_SCAN_DIR Scan_dir)
     SPI_ILI9486_WriteData(MemoryAccessReg_Data);
 }
 
-void SPI_ILI9486_init(void)
-{
-
-
-
-LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-LL_GPIO_InitTypeDef GPIO_InitStructB = {0};
-/* Peripheral clock enable */
-LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
-
-LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
-LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
-LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
-/**SPI1 GPIO Configuration
-PA5   ------> SPI1_SCK
-PA6   ------> SPI1_MISO
-PA7   ------> SPI1_MOSI
-*/
-GPIO_InitStruct.Pin = LL_GPIO_PIN_5|LL_GPIO_PIN_6|LL_GPIO_PIN_7;
-GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-GPIO_InitStructB.Pin = LL_GPIO_PIN_6;
-GPIO_InitStructB.Mode = LL_GPIO_MODE_OUTPUT;
-GPIO_InitStructB.Speed = LL_GPIO_SPEED_FREQ_LOW;
-GPIO_InitStructB.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-GPIO_InitStructB.Pull = LL_GPIO_PULL_NO;
-LL_GPIO_Init(GPIOB, &GPIO_InitStructB);
-
-SPI_ILI9486_CS_High();
-
-
-SPI_TypeDef * spi = SPI1;
-
-LL_SPI_Disable(spi);
-LL_SPI_SetMode(spi, LL_SPI_MODE_MASTER);
-LL_SPI_SetTransferDirection(spi, LL_SPI_FULL_DUPLEX);
-LL_SPI_SetClockPolarity(spi, LL_SPI_POLARITY_LOW);
-LL_SPI_SetClockPhase(spi, LL_SPI_PHASE_1EDGE);
-LL_SPI_SetNSSMode(spi, LL_SPI_NSS_SOFT);
-LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV8);
-LL_SPI_SetTransferBitOrder(spi, LL_SPI_MSB_FIRST);
-LL_SPI_SetDataWidth(spi, LL_SPI_DATAWIDTH_8BIT);
-LL_SPI_SetStandard(spi, LL_SPI_PROTOCOL_MOTOROLA);
-LL_SPI_SetRxFIFOThreshold(spi, LL_SPI_RX_FIFO_TH_QUARTER);
-LL_SPI_Enable(spi);
-
-
-
-}
-
+/********************************************************************************
+function:
+	initialization
+********************************************************************************/
 void ILI9486_Init(LCD_SCAN_DIR LCD_ScanDir)
 {
 
@@ -291,69 +329,28 @@ void ILI9486_Init(LCD_SCAN_DIR LCD_ScanDir)
 	GPIO_InitStructC.Pull = LL_GPIO_PULL_NO;
 	LL_GPIO_Init(GPIOC, &GPIO_InitStructC);
 
-    ILI9486_Reset();
 
 	LL_GPIO_SetOutputPin(GPIOA, ILI9486_DC_PIN);
 	LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
 	LL_GPIO_SetOutputPin(GPIOC, ILI9486_BL_PIN);
 	    //Set the initialization register
-	    LCD_InitReg();
+    //Hardware reset
+	ILI9486_Reset();
 
-	    //Set the display scan and color transfer modes
-	    LCD_SetGramScanWay( LCD_ScanDir);
-	    LL_mDelay(200);
+    //Set the initialization register
+    LCD_InitReg();
 
-	    //sleep out
-	    SPI_ILI9486_WriteReg(0x11);
-	    LL_mDelay(120);
+    //Set the display scan and color transfer modes
+    LCD_SetGramScanWay( LCD_ScanDir);
+    LL_mDelay(200);
 
-	    //Turn on the LCD display
-	    SPI_ILI9486_WriteReg(0x29);
-}
-
-void SPI_ILI9486_CS_low(void)
-{
-	LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_6);
-}
-void SPI_ILI9486_CS_High(void)
-{
-	LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_6);
-}
-
-void SPI_ILI9486_DC_low(void)
-{
-	LL_GPIO_ResetOutputPin(ILI9486_DC_PORT, ILI9486_DC_PIN);
-}
-void SPI_ILI9486_DC_High(void)
-{
-	LL_GPIO_SetOutputPin(ILI9486_DC_PORT, ILI9486_DC_PIN);
-}
-
-void ILI9486_Reset(void)
-{
-    LL_GPIO_ResetOutputPin(GPIOA, ILI9486_RST_PIN);
-    LL_mDelay(10);
-    LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
+    //sleep out
+    SPI_ILI9486_WriteReg(0x11);
     LL_mDelay(120);
+
+    //Turn on the LCD display
+    SPI_ILI9486_WriteReg(0x29);
 }
-
-uint8_t ILI9486_ReadStatus(void)
-{
-	uint8_t status[5] = {0};
-	SPI_ILI9486_WriteReg(ILI9486_READ_STATUS);
-	SPI_ILI9486_Read_Data(status,5);
-	return status[0];
-}
-
-uint8_t ILI9486_ReadID(void)
-{
-	uint8_t id[4] = {0};
-	SPI_ILI9486_WriteReg(ILI9486_READ_ID);
-	SPI_ILI9486_Read_Data(id,4);
-	return id[0];
-}
-
-
 
 /********************************************************************************
 function:	Sets the start position and size of the display area
