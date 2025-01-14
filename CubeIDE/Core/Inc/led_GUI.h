@@ -11,9 +11,12 @@
 #include "main.h"
 #include "led_display.h"
 #include "fonts.h"
+#include "kot.h"
 
 #define LOW_Speed_Show 0
 #define HIGH_Speed_Show 1
+
+
 /********************************************************************************
 function:
 			dot pixel
