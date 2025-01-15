@@ -525,7 +525,30 @@ void GUI_ShowTest(void)
 
         GUI_DisString_EN(40, 40, "Strona Testowa Konsoli Do Gry", &Font20, LCD_BACKGROUND, BLUE);
 
+        DisplayImage(100,100,128,128,30720,kot);
+        DisplayImage(300,100,128,128,32768,kot2);
 
     }
 }
+void DisplayImage(uint16_t currentX, uint16_t currentY,uint16_t sizeX,uint16_t sizeY,uint16_t arraySize, uint16_t* image)
+{
 
+	uint16_t startY = currentY;
+	uint16_t startX = currentX;
+    for(int i=0;i<arraySize;i++)
+    {
+    	currentX++;
+    	uint16_t color = image[i];
+    	GUI_DrawPoint(currentX, currentY, color, DOT_PIXEL_1X1, DOT_FILL_AROUND);
+    	if(i%(sizeX)==0)
+    	{
+    		currentX = startX;
+    		currentY++;
+    	}
+
+    	if(currentY==(sizeY+startY))
+    	{
+    		break;
+    	}
+    }
+}

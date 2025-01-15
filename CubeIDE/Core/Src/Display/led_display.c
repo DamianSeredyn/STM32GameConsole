@@ -348,6 +348,7 @@ void ILI9486_Init(LCD_SCAN_DIR LCD_ScanDir)
     SPI_ILI9486_WriteReg(0x11);
     LL_mDelay(120);
 
+
     //Turn on the LCD display
     SPI_ILI9486_WriteReg(0x29);
 }
