@@ -101,6 +101,8 @@ int main(void)
    MX_I2C1_Init();
 
    SPI_ILI9486_init();
+   spi_init_DMA();
+   LL_mDelay(100);
    LCD_SCAN_DIR Lcd_ScanDir = SCAN_DIR_DFT;
    ILI9486_Init(Lcd_ScanDir);
 
