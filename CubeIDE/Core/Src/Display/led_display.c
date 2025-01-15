@@ -12,7 +12,7 @@ static void SPI_ILI9486_WriteReg(uint8_t Reg)
 {
     SPI_ILI9486_DC_low();       // Komenda (D/CX = Low)
     SPI_ILI9486_CS_low();       // CS = Low
-    spi_write_data(&Reg, 1, SPI1);
+    spi_write_data_dma(&Reg, 1);
     SPI_ILI9486_CS_High();      // CS = High
 }
 
@@ -23,8 +23,8 @@ static void SPI_ILI9486_WriteData(uint8_t Data)
     SPI_ILI9486_CS_low();
 	uint8_t data1 = Data >> 8;
 	uint8_t data2 = Data & 0XFF;
-	spi_write_data(&data1,1,SPI1);
-	spi_write_data(&data2,1,SPI1);
+	spi_write_data_dma(&data1,1);
+	spi_write_data_dma(&data2,1);
     SPI_ILI9486_CS_High();
 }
 static void SPI_ILI9486_AllData(uint16_t Data, uint32_t DataLen)
@@ -35,8 +35,8 @@ static void SPI_ILI9486_AllData(uint16_t Data, uint32_t DataLen)
     for(i = 0; i < DataLen; i++) {
     	uint8_t data1 = Data >> 8;
     	uint8_t data2 = Data & 0XFF;
-    	spi_write_data(&data1,1,SPI1);
-    	spi_write_data(&data2,1,SPI1);
+    	spi_write_data_dma(&data1,1);
+    	spi_write_data_dma(&data2,1);
     }
     SPI_ILI9486_CS_High();
 }
