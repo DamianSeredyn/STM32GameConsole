@@ -12,6 +12,7 @@ static void SPI_ILI9486_WriteReg(uint8_t Reg)
 {
     SPI_ILI9486_DC_low();       // Komenda (D/CX = Low)
     SPI_ILI9486_CS_low();       // CS = Low
+    spi_write_data_dma(0x00, 1);
     spi_write_data_dma(&Reg, 1);
     SPI_ILI9486_CS_High();      // CS = High
 }
@@ -39,6 +40,7 @@ static void SPI_ILI9486_AllData(uint16_t Data, uint32_t DataLen)
     	spi_write_data_dma(&data2,1);
     }
     SPI_ILI9486_CS_High();
+
 }
 // Odczytywanie danych do wyświetlacza
 static void SPI_ILI9486_Read_Data(uint8_t* result, uint8_t size)
@@ -123,8 +125,10 @@ void SPI_ILI9486_DC_High(void)
 
 void ILI9486_Reset(void)
 {
+    LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
+    LL_mDelay(120);
     LL_GPIO_ResetOutputPin(GPIOA, ILI9486_RST_PIN);
-    LL_mDelay(10);
+    LL_mDelay(120);
     LL_GPIO_SetOutputPin(GPIOA, ILI9486_RST_PIN);
     LL_mDelay(120);
 }
