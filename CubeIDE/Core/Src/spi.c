@@ -59,16 +59,36 @@ void spi_init_interupts(void)
 	NVIC_EnableIRQ(SPI2_IRQn);
 }
 
+void spi_init_DMA(void)
+{
+		LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+	  LL_DMA_SetPeriphRequest(DMA1, LL_DMA_CHANNEL_3, LL_DMA_REQUEST_1);
+	  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_3, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+	  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_3, LL_DMA_PRIORITY_HIGH);
+	  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MODE_NORMAL);
+	  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_3, LL_DMA_PERIPH_NOINCREMENT);
+	  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MEMORY_INCREMENT);
+	  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_3, LL_DMA_PDATAALIGN_BYTE);
+	  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MDATAALIGN_BYTE);
+	  LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_3, (uint32_t)&SPI1->DR);
+
+
+	   LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_3);
+	   LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_3);
+	   NVIC_SetPriority(DMA1_Channel3_IRQn, 0);
+	   NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+
+}
 void SPI2_IRQHandler(void)
 {
 	if(LL_SPI_IsActiveFlag_TXE(SPI2) && LL_SPI_IsEnabledIT_TXE(SPI2))
 	{
-		spi_it_transmit_callback(SPI2);
+		//spi_it_transmit_callback(SPI2);
 	}
 
 	if(LL_SPI_IsActiveFlag_RXNE(SPI2) && LL_SPI_IsEnabledIT_RXNE(SPI2))
 	{
-		spi_it_receive_callback(SPI2);
+		//spi_it_receive_callback(SPI2);
 	}
 }
 void spi_write_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
@@ -136,103 +156,22 @@ void spi_read_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
 	LL_SPI_ClearFlag_OVR(spi);
 }
 
-void spi_write_data_it(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
+void spi_write_data_dma(uint8_t *data, uint32_t size)
 {
-	tx_buffer.data_ptr = data;
-	tx_buffer.count = size;
+    LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_3, (uint32_t)data);
+    LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_3, size);
+    LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_3);
+    LL_SPI_EnableDMAReq_TX(SPI1);
 
-	LL_SPI_EnableIT_TXE(spi);
-	LL_SPI_Enable(spi);
 }
+void DMA1_Channel3_IRQHandler(void) {
+    if (LL_DMA_IsActiveFlag_TC3(DMA1)) {
+        LL_DMA_ClearFlag_TC3(DMA1);
+        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_3);
+    }
 
-void spi_read_data_it(uint8_t *data, uint32_t size, SPI_TypeDef * spi)
-{
-	tx_buffer.count = size;
-
-	rx_buffer.data_ptr = data;
-	rx_buffer.count = size;
-
-	LL_SPI_EnableIT_TXE(spi);
-	LL_SPI_EnableIT_RXNE(spi);
-	LL_SPI_Enable(spi);
-}
-
-void spi_it_transmit_callback(SPI_TypeDef * spi)
-{
-	if(tx_buffer.count > 0)
-	{
-		if(!LL_SPI_IsEnabledIT_RXNE(spi))
-		{
-			LL_SPI_TransmitData8(spi, *tx_buffer.data_ptr);
-
-			tx_buffer.data_ptr++;
-			tx_buffer.count--;
-		}
-		else
-		{
-			LL_SPI_TransmitData8(spi, DUMMY_BYTE);
-			tx_buffer.count--;
-		}
-	}
-
-	if(tx_buffer.count <= 0 && !LL_SPI_IsEnabledIT_RXNE(spi))
-	{
-		LL_SPI_DisableIT_TXE(spi);
-
-		while (LL_SPI_GetTxFIFOLevel(spi) != LL_SPI_TX_FIFO_EMPTY)
-			;
-
-		while (LL_SPI_IsActiveFlag_BSY(spi) != 0)
-			;
-
-		LL_SPI_Disable(spi);
-
-		while (LL_SPI_GetRxFIFOLevel(spi) != LL_SPI_RX_FIFO_EMPTY)
-		{
-			LL_SPI_ReceiveData8(spi);
-		}
-
-		LL_SPI_ClearFlag_OVR(spi);
-
-		spi_transfer_cplt_callback(TRANSMIT);
-	}
-}
-
-void spi_it_receive_callback( SPI_TypeDef * spi)
-{
-	if(rx_buffer.count > 0)
-	{
-		*rx_buffer.data_ptr = LL_SPI_ReceiveData8(spi);
-
-		rx_buffer.data_ptr++;
-		rx_buffer.count--;
-	}
-
-	if(rx_buffer.count <= 0)
-	{
-		LL_SPI_DisableIT_RXNE(spi);
-		LL_SPI_DisableIT_TXE(spi);
-
-		while (LL_SPI_GetTxFIFOLevel(spi) != LL_SPI_TX_FIFO_EMPTY)
-			;
-
-		while (LL_SPI_IsActiveFlag_BSY(spi) != 0)
-			;
-
-		LL_SPI_Disable(spi);
-
-		while (LL_SPI_GetRxFIFOLevel(spi) != LL_SPI_RX_FIFO_EMPTY)
-		{
-			LL_SPI_ReceiveData8(spi);
-		}
-
-		LL_SPI_ClearFlag_OVR(spi);
-
-		spi_transfer_cplt_callback(RECEIVE);
-	}
-}
-
-__attribute__((weak)) void spi_transfer_cplt_callback(transfer_type_t type)
-{
-	(void)type;
+    if (LL_DMA_IsActiveFlag_TE3(DMA1)) {
+        LL_DMA_ClearFlag_TE3(DMA1);
+        printf("DMA error occurred\n");
+    }
 }

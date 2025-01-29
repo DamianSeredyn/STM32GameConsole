@@ -37,6 +37,9 @@ void spi_it_transmit_callback(SPI_TypeDef * spi);
 void spi_it_receive_callback( SPI_TypeDef * spi);
 void spi_write_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
 void spi_read_data(uint8_t *data, uint32_t size, SPI_TypeDef * spi);
-
+void spi_init_DMA(void);
+void spi_write_data_dma(uint8_t *data, uint32_t size);
+void spi_dma_transmit_callback(void);
+void spi_dma_receive_callback(void);
 
 #endif /* INC_SPI_H_ */

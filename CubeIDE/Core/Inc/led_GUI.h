@@ -11,9 +11,12 @@
 #include "main.h"
 #include "led_display.h"
 #include "fonts.h"
+#include "kot.h"
 
 #define LOW_Speed_Show 0
 #define HIGH_Speed_Show 1
+
+
 /********************************************************************************
 function:
 			dot pixel
@@ -118,8 +121,8 @@ void GUI_DisNum(POINT Xpoint, POINT Ypoint, int32_t Nummber, sFONT* Font, COLOR 
 void GUI_Showtime(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend, DEV_TIME *pTime, COLOR Color);
 //show
 void GUI_ShowTest(void);
-
-
+void DisplayImage(uint16_t currentX, uint16_t currentY,uint16_t sizeX,uint16_t sizeY,uint16_t arraySize, uint8_t* image);
+void DisplayMenu();
 
 
 

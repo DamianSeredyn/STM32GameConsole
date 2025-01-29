@@ -519,13 +519,48 @@ void GUI_ShowTest(void)
     if(sLCD_DIS.LCD_Dis_Column > sLCD_DIS.LCD_Dis_Page) { //Horizontal screen display
 
 
-        GUI_DrawLine(0, 0, LCD_WIDTH, 0, RED, LINE_SOLID, DOT_PIXEL_6X6);
-        GUI_DrawLine(0, LCD_HEIGHT, LCD_WIDTH, LCD_HEIGHT, RED, LINE_SOLID, DOT_PIXEL_6X6);
+        GUI_DrawLine(0, 0, LCD_WIDTH, 0, RED, LINE_SOLID, DOT_PIXEL_3X3);
+        GUI_DrawLine(0, LCD_HEIGHT, LCD_WIDTH, LCD_HEIGHT, RED, LINE_SOLID, DOT_PIXEL_3X3);
 
 
         GUI_DisString_EN(40, 40, "Strona Testowa Konsoli Do Gry", &Font20, LCD_BACKGROUND, BLUE);
 
+        DisplayImage(100,100,64,64,8192,logo);
 
     }
 }
+void DisplayImage(uint16_t currentX, uint16_t currentY,uint16_t sizeX,uint16_t sizeY,uint16_t arraySize, uint8_t* image)
+{
 
+	uint16_t startY = currentY;
+	uint16_t startX = currentX;
+    for(int i=0;i<arraySize;i=i+2)
+    {
+    	uint16_t color = (image[i+1] << 8) | image[i];
+    	GUI_DrawPoint(currentX, currentY, color, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+    	currentX++;
+    	if(i%(sizeX*2)==0)
+    	{
+    		currentX = startX;
+    		currentY++;
+    	}
+
+    	if(currentY==(sizeY+startY))
+    	{
+    		break;
+    	}
+    }
+}
+
+void DisplayMenu()
+{
+	GUI_Clear(WHITE);
+	GUI_DisString_EN(190, 40, "Menu", &Font24, LCD_BACKGROUND, BLACK);
+
+	GUI_DisString_EN(170, 140, "Wybor gry", &Font16, LCD_BACKGROUND, BLACK);
+	GUI_DisString_EN(170, 165, "Ustawienia", &Font16, LCD_BACKGROUND, BLACK);
+	GUI_DisString_EN(170, 190, "Tworcy", &Font16, LCD_BACKGROUND, BLACK);
+
+	GUI_DisString_EN(150, 138, ">", &Font20, LCD_BACKGROUND, RED);
+	DisplayImage(415,5,64,64,8192,logo);
+}

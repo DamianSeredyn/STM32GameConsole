@@ -67,7 +67,6 @@ void LCD_SetPointlColor(POINT Xpoint, POINT Ypoint, COLOR Color);
 void LCD_SetArealColor(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend,COLOR  Color);
 void LCD_Clear(COLOR  Color);
 
-
 #define ILI9486_BL_PIN LL_GPIO_PIN_7
 #define ILI9486_RST_PIN LL_GPIO_PIN_9
 #define ILI9486_DC_PIN LL_GPIO_PIN_8
@@ -119,9 +118,6 @@ void LCD_Clear(COLOR  Color);
 #define ILI9486_DISPLAY_FUNCTION_CONTROL 0xB6
 
 
-#define COLOR_RED    0xF800
-#define COLOR_GREEN  0x07E0
-#define COLOR_BLUE   0x001F
 
 
 
