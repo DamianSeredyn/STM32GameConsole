@@ -70,8 +70,13 @@ void spi_init_DMA(void)
 	  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MEMORY_INCREMENT);
 	  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_3, LL_DMA_PDATAALIGN_BYTE);
 	  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MDATAALIGN_BYTE);
-	  LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_3);
 	  LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_3, (uint32_t)&SPI1->DR);
+
+
+	   LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_3);
+	   LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_3);
+	   NVIC_SetPriority(DMA1_Channel3_IRQn, 0);
+	   NVIC_EnableIRQ(DMA1_Channel3_IRQn);
 
 }
 void SPI2_IRQHandler(void)
@@ -155,14 +160,18 @@ void spi_write_data_dma(uint8_t *data, uint32_t size)
 {
     LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_3, (uint32_t)data);
     LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_3, size);
-
     LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_3);
-
     LL_SPI_EnableDMAReq_TX(SPI1);
 
-    while (!LL_DMA_IsActiveFlag_TC3(DMA1));
-    LL_DMA_ClearFlag_TC3(DMA1);
-
-    LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_3);
 }
+void DMA1_Channel3_IRQHandler(void) {
+    if (LL_DMA_IsActiveFlag_TC3(DMA1)) {
+        LL_DMA_ClearFlag_TC3(DMA1);
+        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_3);
+    }
 
+    if (LL_DMA_IsActiveFlag_TE3(DMA1)) {
+        LL_DMA_ClearFlag_TE3(DMA1);
+        printf("DMA error occurred\n");
+    }
+}

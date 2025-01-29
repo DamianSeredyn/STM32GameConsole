@@ -121,8 +121,8 @@ void GUI_DisNum(POINT Xpoint, POINT Ypoint, int32_t Nummber, sFONT* Font, COLOR 
 void GUI_Showtime(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend, DEV_TIME *pTime, COLOR Color);
 //show
 void GUI_ShowTest(void);
-
-
+void DisplayImage(uint16_t currentX, uint16_t currentY,uint16_t sizeX,uint16_t sizeY,uint16_t arraySize, uint8_t* image);
+void DisplayMenu();
 
 
 
