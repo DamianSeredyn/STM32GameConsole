@@ -111,6 +111,7 @@ int main(void)
 
    MX_TIM2_Init();
 
+   PlayMusic(0);
 
    BUTTON_EXTI_Init();
 
