@@ -3,6 +3,12 @@
 void BUTTON_EXTI_Init(void)
 {
 
+	 LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+
+	 LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
+	 LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+
+
 	/* Set Button */
 	 LL_GPIO_SetPinPull(Button_GPIO_Port, Button_Pin, LL_GPIO_PULL_NO);
      LL_GPIO_IsInputPinSet(Button_GPIO_Port, Button_Pin);
