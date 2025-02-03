@@ -11,8 +11,6 @@
 
 
 
-static buffer_f rx_buffer = {0};
-static buffer_f tx_buffer = {0};
 
 void MX_SPI2_Init(void)
 {

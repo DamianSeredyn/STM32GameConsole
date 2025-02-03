@@ -25,7 +25,7 @@
 	uint8_t buffer_UART2_RX[BUFFER_SIZE] = {0};
 
 	ringbuf_u8_s ringbuffer_UART2_TX;
-	uint8_t buffer_UART2_TX[BUFFER_SIZE] = {0};
+	uint8_t buffer_UART2_TX[OUTPUT_BUFFER_SIZE] = {0};
 /* USER CODE END 0 */
 
 /* USART1 init function */
@@ -143,7 +143,7 @@ void MX_USART2_UART_Init(void)
 
 void InitRingbuffer(void){
 	ringbuf_u8_init(&ringbuffer_UART2_RX, buffer_UART2_RX, BUFFER_SIZE);
-	ringbuf_u8_init(&ringbuffer_UART2_TX, buffer_UART2_TX, BUFFER_SIZE);
+	ringbuf_u8_init(&ringbuffer_UART2_TX, buffer_UART2_TX, OUTPUT_BUFFER_SIZE);
 }
 
 
@@ -188,7 +188,7 @@ void USART2_ReadData(void)
     LL_USART_EnableIT_TXE(USART2);
 }
 
-void USART2_SendData(uint8_t* message,uint8_t size)
+void USART2_SendData(uint8_t* message,uint16_t size)
 {
 
 	for (size_t i = 0; i < size; i++) {

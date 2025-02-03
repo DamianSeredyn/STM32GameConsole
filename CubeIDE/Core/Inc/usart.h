@@ -44,7 +44,7 @@ void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void USART2_ReadData(void);
-void USART2_SendData(uint8_t* message,uint8_t size);
+void USART2_SendData(uint8_t* message,uint16_t size);
 void USART2_HandleData(void);
 /* USER CODE END Prototypes */
 
