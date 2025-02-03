@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 // PC13-button1 PA5-dioda led
-#define Button_GPIO_Port GPIOC
+ #define Button_GPIO_Port GPIOC
 #define Button_Pin LL_GPIO_PIN_12
 #define Button1_Pin LL_GPIO_PIN_13
 #define Button2_Pin LL_GPIO_PIN_14
