@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 #define MAX_CONSOLE_WORDS 10
-#define BUFFER_SIZE_COMMAND 128
+#define BUFFER_SIZE_COMMAND 256
+#define OUTPUT_BUFFER_SIZE 1024
 
 #include "stm32l4xx_ll_crs.h"
 #include "stm32l4xx_ll_rcc.h"

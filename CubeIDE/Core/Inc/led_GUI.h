@@ -123,7 +123,7 @@ void GUI_Showtime(POINT Xstart, POINT Ystart, POINT Xend, POINT Yend, DEV_TIME *
 void GUI_ShowTest(void);
 void DisplayImage(uint16_t currentX, uint16_t currentY,uint16_t sizeX,uint16_t sizeY,uint16_t arraySize, uint8_t* image);
 void DisplayMenu();
-
+void GUI_ShowProducent(void);
 
 
 #endif /* INC_LED_GUI_H_ */

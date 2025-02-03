@@ -188,6 +188,18 @@ void ManageActions()
 		  	  case 2:
 		  		DisplayMenu();
 			  break;
+		  	  case 3:
+		  		GUI_ShowProducent();
+		  	  break;
+		  	  case 4:
+		  		LL_GPIO_ResetOutputPin(GPIOC, ILI9486_BL_PIN);
+		  	  break;
+		  	  case 5:
+		  		LL_GPIO_SetOutputPin(GPIOC, ILI9486_BL_PIN);
+		  	  break;
+		  	  case 6:
+		  		GUI_Clear(0xFFFF);
+		  	  break;
 		  }
 	ACTION = 0;
 }
