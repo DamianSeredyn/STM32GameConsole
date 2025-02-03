@@ -567,3 +567,80 @@ void DisplayMenu()
 	GUI_DisString_EN(150, 138, ">", &Font20, LCD_BACKGROUND, RED);
 //	DisplayImage(415,5,64,64,8192,logo);
 }
+
+void GUI_ShowProducent(void)
+{
+
+    GUI_Clear(WHITE);
+    if(sLCD_DIS.LCD_Dis_Column > sLCD_DIS.LCD_Dis_Page) { //Horizontal screen display
+
+
+        GUI_DrawLine(0, 10, LCD_WIDTH, 10, RED, LINE_SOLID, DOT_PIXEL_2X2);
+        GUI_DrawLine(0, 20, LCD_WIDTH, 20, RED, LINE_DOTTED, DOT_PIXEL_DFT);
+        GUI_DrawLine(0, 300, LCD_WIDTH, 300, RED, LINE_DOTTED, DOT_PIXEL_DFT);
+        GUI_DrawLine(0, 310, LCD_WIDTH, 310, RED, LINE_SOLID, DOT_PIXEL_2X2);
+
+
+        GUI_DrawRectangle(10, 30, sLCD_DIS.LCD_Dis_Column - 10, sLCD_DIS.LCD_Dis_Page - 30, BLUE, DRAW_EMPTY, DOT_PIXEL_DFT);
+        GUI_DrawRectangle(20, 40, sLCD_DIS.LCD_Dis_Column - 20, 60, BLUE, DRAW_FULL, DOT_PIXEL_DFT);
+
+
+        uint16_t Cx1 = 190, Cy1 = 240, Cr = 20;
+        uint16_t Cx2 = Cx1 + (2.5 * Cr), Cy2 = Cy1;
+        uint16_t Cx3 = Cx1 + (5 * Cr), Cy3 = Cy1;
+        uint16_t Cx4 = ( Cx1 + Cx2 ) / 2, Cy4 = Cy1 + Cr;
+        uint16_t Cx5 = ( Cx2 + Cx3 ) / 2, Cy5 = Cy1 + Cr;
+
+        GUI_DrawCircle( Cx1, Cy1, Cr, BLUE, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx2, Cy2, Cr, BLACK, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx3, Cy3, Cr, RED, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx4, Cy4, Cr, YELLOW, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx5, Cy5, Cr, GREEN, DRAW_EMPTY, DOT_PIXEL_2X2);
+
+
+        GUI_DrawCircle(50, 250, 30, CYAN, DRAW_FULL, DOT_PIXEL_DFT);
+        GUI_DrawCircle(sLCD_DIS.LCD_Dis_Column - 50, 250, 30, CYAN, DRAW_FULL, DOT_PIXEL_DFT);
+
+
+        GUI_DisString_EN(80, 80, "WaveShare Electronic", &Font24, LCD_BACKGROUND, BLUE);
+        GUI_DisString_EN(80, 120, "3.5inch TFTLCD", &Font20, RED, BLUE);
+
+
+        GUI_DisNum(80, 150, 1234567890, &Font16, LCD_BACKGROUND, BLUE);
+
+    } else { //Vertical screen display
+
+        GUI_DrawLine(0, 10, sLCD_DIS.LCD_Dis_Column , 10, RED, LINE_SOLID, DOT_PIXEL_2X2);
+        GUI_DrawLine(0, 20, sLCD_DIS.LCD_Dis_Column , 20, RED, LINE_DOTTED, DOT_PIXEL_DFT);
+        GUI_DrawLine(0, sLCD_DIS.LCD_Dis_Page - 20, sLCD_DIS.LCD_Dis_Column , sLCD_DIS.LCD_Dis_Page - 20, RED, LINE_DOTTED, DOT_PIXEL_DFT);
+        GUI_DrawLine(0, sLCD_DIS.LCD_Dis_Page - 10, sLCD_DIS.LCD_Dis_Column , sLCD_DIS.LCD_Dis_Page - 10, RED, LINE_SOLID, DOT_PIXEL_2X2);
+
+        GUI_DrawRectangle(10, 30, sLCD_DIS.LCD_Dis_Column - 10, sLCD_DIS.LCD_Dis_Page - 30, BLUE, DRAW_EMPTY, DOT_PIXEL_DFT);
+        GUI_DrawRectangle(20, 40, sLCD_DIS.LCD_Dis_Column - 20, 60, BLUE, DRAW_FULL, DOT_PIXEL_DFT);
+
+
+        uint16_t Cx1 = 120, Cy1 = 300, Cr = 20;
+        uint16_t Cx2 = Cx1 + (2.5 * Cr), Cy2 = Cy1;
+        uint16_t Cx3 = Cx1 + (5 * Cr), Cy3 = Cy1;
+        uint16_t Cx4 = ( Cx1 + Cx2 ) / 2, Cy4 = Cy1 + Cr;
+        uint16_t Cx5 = ( Cx2 + Cx3 ) / 2, Cy5 = Cy1 + Cr;
+
+        GUI_DrawCircle( Cx1, Cy1, Cr, BLUE, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx2, Cy2, Cr, BLACK, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx3, Cy3, Cr, RED, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx4, Cy4, Cr, YELLOW, DRAW_EMPTY, DOT_PIXEL_2X2);
+        GUI_DrawCircle( Cx5, Cy5, Cr, GREEN, DRAW_EMPTY, DOT_PIXEL_2X2);
+
+
+        GUI_DrawCircle(50, 400, 30, CYAN, DRAW_FULL, DOT_PIXEL_DFT);
+        GUI_DrawCircle(sLCD_DIS.LCD_Dis_Column - 50, 400, 30, CYAN, DRAW_FULL, DOT_PIXEL_DFT);
+
+
+        GUI_DisString_EN(40, 120, "WaveShare Electronic", &Font24, LCD_BACKGROUND, BLUE);
+        GUI_DisString_EN(40, 180, "3.5inch TFTLCD", &Font20, RED, BLUE);
+
+
+        GUI_DisNum(40, 210, 1234567890, &Font16, LCD_BACKGROUND, BLUE);
+
+    }
+}
