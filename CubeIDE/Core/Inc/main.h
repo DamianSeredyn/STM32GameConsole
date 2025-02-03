@@ -56,7 +56,7 @@ extern "C" {
 #include "Tim.h"
 #include "buzzer.h"
 #include "led_display.h"
-
+#include "usart_console.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -66,7 +66,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern uint16_t ACTION;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -78,7 +78,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void ManageActions();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
