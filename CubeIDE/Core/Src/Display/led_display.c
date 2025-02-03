@@ -149,15 +149,15 @@ static void LCD_InitReg(void)
     SPI_ILI9486_WriteData(0x00);
 
     SPI_ILI9486_WriteReg(0xC2);	//Normal mode, increase can change the display quality, while increasing power consumption
-    SPI_ILI9486_WriteData(0x44);
+    SPI_ILI9486_WriteData(0x33);
 
     SPI_ILI9486_WriteReg(0XC5);
     SPI_ILI9486_WriteData(0x00);
     SPI_ILI9486_WriteData(0x28);//VCM_REG[7:0]. <=0X80.
 
     SPI_ILI9486_WriteReg(0xB1);//Sets the frame frequency of full color normal mode
-    SPI_ILI9486_WriteData(0xE0);//0XB0 =70HZ, <=0XB0.0xA0=62HZ
-    SPI_ILI9486_WriteData(0x1F);
+    SPI_ILI9486_WriteData(0xA0);//0XB0 =70HZ, <=0XB0.0xA0=62HZ
+    SPI_ILI9486_WriteData(0x11);
 
     SPI_ILI9486_WriteReg(0xB4);
     SPI_ILI9486_WriteData(0x02); //2 DOT FRAME MODE,F<=70HZ.

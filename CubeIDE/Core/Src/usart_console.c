@@ -8,6 +8,8 @@
 #include "usart_console.h"
 
 
+uint16_t ACTION = 0;
+
 void HandleCommand(uint8_t* data)
 {
 	uint8_t response[BUFFER_SIZE-1]= {0}; // -1 because of structure of buffer!
@@ -34,6 +36,33 @@ void HandleCommand(uint8_t* data)
 	        case 2:
 	        		strcpy((char*)response, "Hi there! Need help? Type !help or simply enter a command.\r\n");
 	            break;
+	        case 3:
+	        		if(strcmp((const char *)decomposedData[1], "TestScreen")==0)
+	        		{
+	        			strcpy((char*)response, "\r\n Displaying Test Screen on Display...\r\n");
+	        			ACTION = 1;
+	        		}
+	        		else if(strcmp((const char *)decomposedData[1], "Menu")==0)
+	        		{
+	        			strcpy((char*)response, "\r\n Displaying Menu on Display...\r\n");
+	        			ACTION =2;
+	        		}
+	        		else if(strcmp((const char *)decomposedData[1], "ProducerTestScreen")==0)
+	        		{
+	        			strcpy((char*)response, "\r\n Displaying  Producer Test Screen...\r\n");
+	        			ACTION =3;
+	        		}
+	        		else if(strcmp((const char *)decomposedData[1], "Disable")==0)
+	        		{
+	        			strcpy((char*)response, "\r\n Disable display...\r\n");
+	        			ACTION =4;
+	        		}
+	        		else
+	        		{
+	        			strcpy((char*)response, "\r\n ERROR! Invalid arguments, view !help display.\r\n");
+	        		}
+	            break;
+
 	        default:
 	            snprintf((char*)response,BUFFER_SIZE, "\r\nError! '%s' -> Unknown command.\r\n"  , (char*)decomposedData[0]);
 	            break;
@@ -47,6 +76,8 @@ void HandleCommand(uint8_t* data)
 unsigned int hash_command( uint8_t *cmd) {
     if (strcmp((const char *)cmd, "!help") == 0) return 1;
     if (strcmp((const char *)cmd, "\r") == 0 || strcmp((const char *)cmd, "") == 0) return 2;
+    if (strcmp((const char *)cmd, "!display") == 0) return 3;
+    if (strcmp((const char *)cmd, "!cat") == 0) return 4;
     return 0;
 }
 

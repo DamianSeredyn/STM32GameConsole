@@ -103,7 +103,7 @@ int main(void)
    SPI_ILI9486_init();
    spi_init_DMA();
    LL_mDelay(100);
-   LCD_SCAN_DIR Lcd_ScanDir = SCAN_DIR_DFT;
+   LCD_SCAN_DIR Lcd_ScanDir = D2U_L2R;
    ILI9486_Init(Lcd_ScanDir);
 
    MX_SPI2_Init();
@@ -111,7 +111,6 @@ int main(void)
 
    MX_TIM2_Init();
 
-   DisplayMenu();
 
    BUTTON_EXTI_Init();
 
@@ -121,6 +120,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  ManageActions(); // Manage USART actions
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -179,7 +179,21 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void ManageActions()
+{
+	if(ACTION == 0)
+		return;
+	switch(ACTION)
+		  {
+		  	  case 1:
+		  		GUI_ShowTest();
+			  break;
+		  	  case 2:
+		  		DisplayMenu();
+			  break;
+		  }
+	ACTION = 0;
+}
 /* USER CODE END 4 */
 
 /**
