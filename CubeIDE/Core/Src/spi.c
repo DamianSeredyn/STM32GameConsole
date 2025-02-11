@@ -51,7 +51,9 @@ void MX_SPI2_Init(void)
 		LL_SPI_SetClockPolarity(spi, LL_SPI_POLARITY_LOW);
 		LL_SPI_SetClockPhase(spi, LL_SPI_PHASE_1EDGE);
 		LL_SPI_SetNSSMode(spi, LL_SPI_NSS_SOFT);
-		LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV256); // changed to low value for SD card, might be changed in the future
+
+		 // changed to low value for SD card, it is later changed to DIV2 in SD init
+		LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV256);
 		LL_SPI_SetTransferBitOrder(spi, LL_SPI_MSB_FIRST);
 		LL_SPI_SetDataWidth(spi, LL_SPI_DATAWIDTH_8BIT);
 		LL_SPI_SetStandard(spi, LL_SPI_PROTOCOL_MOTOROLA);
