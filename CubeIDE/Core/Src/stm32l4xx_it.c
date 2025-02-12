@@ -204,5 +204,44 @@ void SysTick_Handler(void)
 
 
 /* USER CODE BEGIN 1 */
+  void EXTI15_10_IRQHandler(void)
+{
+    if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_12))
+    {
+
+        // Tutaj możesz dodać kod obsługi przycisku
+        LL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
+
+        LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_12);
+    }
+
+    if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_13))
+        {
+
+            // Tutaj możesz dodać kod obsługi przycisku
+            LL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN1_Pin);
+
+            LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_13);
+        }
+
+    if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_14))
+        {
+
+
+            LL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN2_Pin);
+
+            LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_14);
+        }
+
+    if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_15))
+        {
+
+
+            LL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN3_Pin);
+
+            LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_15);
+        }
+}
+
 
 /* USER CODE END 1 */
