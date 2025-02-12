@@ -105,7 +105,7 @@ int main(void)
    LL_mDelay(100);
    LCD_SCAN_DIR Lcd_ScanDir = D2U_L2R;
    ILI9486_Init(Lcd_ScanDir);
-
+   BUTTON_EXTI_Init();
    MX_SPI2_Init();
    spi_init_interupts();
 
@@ -113,7 +113,6 @@ int main(void)
 
    PlayMusic(0);
 
-   BUTTON_EXTI_Init();
 
   /* USER CODE END 2 */
 
