@@ -115,6 +115,7 @@ int main(void)
    //PlayMusic(0);
 
    SD_card_init();
+   //read_write_test();
   /* USER CODE END 2 */
 
   /* Infinite loop */
