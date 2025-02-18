@@ -22,33 +22,33 @@ void SD_write(uint8_t *data_sent,uint8_t sector1,uint8_t sector2,uint8_t sector3
 	uint8_t test = 0xFF;
 	uint8_t crc[2] = {0x00, 0x00};
 	spi_cs2_set_low();
-	spi_write_data(command, sizeof(command));
+	spi_write_data(command, sizeof(command),SPI2);
 	while (response != 0x00){
-			spi_read_data(&response, sizeof(response));
+			spi_read_data(&response, sizeof(response),SPI2);
 			response = response;
 		}
 	while (response != 0xFF){
-			spi_read_data(&response, sizeof(response));
+			spi_read_data(&response, sizeof(response),SPI2);
 			response = response;
 		}
 
 	for(uint8_t i = 0; i < 10; i++){
-		spi_write_data(&test, sizeof(test));
+		spi_write_data(&test, sizeof(test),SPI2);
 	}
 
-	spi_write_data(&start_data, sizeof(start_data));
+	spi_write_data(&start_data, sizeof(start_data),SPI2);
 
 	for (uint16_t i = 0; i < 512; i++){
 		data[i] = data_sent[i];
 	}
 
 
-	spi_write_data(data, sizeof(data));
-	spi_write_data(crc, sizeof(crc));
+	spi_write_data(data, sizeof(data),SPI2);
+	spi_write_data(crc, sizeof(crc),SPI2);
 
 	// returns error idk why but data is written anyways
 	while (response != 0x0f){
-			spi_read_data(&response, sizeof(response));
+			spi_read_data(&response, sizeof(response),SPI2);
 		}
 	read_response(0xFF, 0xFF);
 
@@ -65,15 +65,15 @@ uint8_t* SD_read_single(uint8_t sector1,uint8_t sector2,uint8_t sector3,uint8_t 
 		data[i] = 0xFF;
 	}
 	spi_cs2_set_low();
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	while (response != 0x00){
-		spi_read_data(&response, sizeof(response));
+		spi_read_data(&response, sizeof(response),SPI2);
 	}
 	while (response != 0xFE){
-		spi_read_data(&response, sizeof(response));
+		spi_read_data(&response, sizeof(response),SPI2);
 	}
 
-	spi_read_data(data, sizeof(data));
+	spi_read_data(data, sizeof(data),SPI2);
 	read_response(0xFF, 0xFF);
 
 	spi_cs2_set_high();
@@ -83,7 +83,7 @@ uint8_t* SD_read_single(uint8_t sector1,uint8_t sector2,uint8_t sector3,uint8_t 
 void change_SPI_speed(){
 	spi_cs2_set_high();
 	LL_SPI_Disable(SPI2);
-	LL_SPI_SetBaudRatePrescaler(SPI2, LL_SPI_BAUDRATEPRESCALER_DIV4);
+	LL_SPI_SetBaudRatePrescaler(SPI2, LL_SPI_BAUDRATEPRESCALER_DIV8);
 	LL_SPI_Enable(SPI2);
 	spi_cs2_set_low();
 }
@@ -93,7 +93,7 @@ uint8_t read_response(uint8_t answer1, uint8_t answer2){
 	uint8_t read_loop = 0;
 	bool error = 0;
 	while (read_loop < 10){
-		spi_read_data(&response, sizeof(response));
+		spi_read_data(&response, sizeof(response),SPI2);
 		if(response != answer1 && response != answer2 && response != 0xFF && response != 0x00){
 			error = 1;
 		}
@@ -106,12 +106,12 @@ uint8_t SD_card_init(){
 	uint8_t wake_up[] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 	bool error = 0;
 	//Wake up SD card
-	spi_write_data(wake_up, sizeof(wake_up));
+	spi_write_data(wake_up, sizeof(wake_up),SPI2);
 	spi_cs2_set_low();
 
 	// Init SPI mode
 	uint8_t table[6] = {0x40, 0x00, 0x00, 0x00, 0x00, 0x95}; // special CRC needed do not change
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	LL_mDelay(1000);
 	// Check if SD card got initialized correctly
 	error = read_response(0x01, 0xFF);
@@ -120,25 +120,25 @@ uint8_t SD_card_init(){
 	// CMD8 - Check voltage, In short check if SD card can use 3.3V, needed for something
 	spi_cs2_set_low();
 	table[0] = 0x48; table[1] = 0x00; table[2] = 0x00; table[3] = 0x01; table[4] = 0xAA; table[5] = get_CRC7(table[0]);
-	spi_write_data(wake_up, sizeof(wake_up));
-	spi_write_data(table, sizeof(table));
+	spi_write_data(wake_up, sizeof(wake_up),SPI2);
+	spi_write_data(table, sizeof(table),SPI2);
 	error = read_response(0x01, 0xAA);
 	spi_cs2_set_high();
 
 	// CMD55 - needed for all ACMD commands to work (initializes special command)
 	for (uint8_t i = 0; i < 100; i ++){
 	spi_cs2_set_low();
-	spi_write_data(wake_up, sizeof(wake_up));
+	spi_write_data(wake_up, sizeof(wake_up),SPI2);
 	table[0] = 0x77; table[1] = 0x00; table[2] = 0x00; table[3] = 0x00; table[4] = 0x00; table[5] = get_CRC7(table[0]);
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	read_response(0xFF, 0xFF);
 	spi_cs2_set_high();
 
 	// ACMD41 - used to initialize the card
 	spi_cs2_set_low();
-	spi_write_data(wake_up, sizeof(wake_up));
+	spi_write_data(wake_up, sizeof(wake_up),SPI2);
 	table[0] = 0x69; table[1] = 0x40; table[2] = 0x00; table[3] = 0x00; table[4] = 0x00; table[5] = get_CRC7(table[0]);
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	read_response(0xFF, 0xFF);
 	spi_cs2_set_high();
 
@@ -146,20 +146,20 @@ uint8_t SD_card_init(){
 
 	// CMD58 - used to check card type and supported voltage
 	table[0] = 0x7A; table[1] = 0x00; table[2] = 0x00; table[3] = 0x00; table[4] = 0x00; table[5] = get_CRC7(table[0]);
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	error = read_response(0x01, 0xC0);
 
 	change_SPI_speed();
 
 	// CMD16 to set block length to 512 bytes, might by not needed
 	table[0] = 0x50; table[1] = 0x00; table[2] = 0x00; table[3] = 0x02; table[4] = 0x00; table[5] = get_CRC7(table[0]);
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	error = read_response(0xFF, 0xFF);
 
 
 	// CMD13 - used to check status, should return 0x00, 0x00
 	table[0] = 0x4D; table[1] = 0x00; table[2] = 0x00; table[3] = 0x00; table[4] = 0x00; table[5] = get_CRC7(table[0]);
-	spi_write_data(table, sizeof(table));
+	spi_write_data(table, sizeof(table),SPI2);
 	error = read_response(0xFF, 0xFF);
 
 	spi_cs2_set_high();

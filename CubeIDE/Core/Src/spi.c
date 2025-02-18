@@ -43,6 +43,8 @@ void MX_SPI2_Init(void)
 	GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
 	LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+	spi_cs2_set_high();
+
 	LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
 
 		LL_SPI_Disable(spi);
@@ -52,7 +54,7 @@ void MX_SPI2_Init(void)
 		LL_SPI_SetClockPhase(spi, LL_SPI_PHASE_1EDGE);
 		LL_SPI_SetNSSMode(spi, LL_SPI_NSS_SOFT);
 
-		 // changed to low value for SD card, it is later changed to DIV2 in SD init
+		 // changed to low value for SD card, it is later changed to DIV8 in SD init
 		LL_SPI_SetBaudRatePrescaler(spi, LL_SPI_BAUDRATEPRESCALER_DIV256);
 		LL_SPI_SetTransferBitOrder(spi, LL_SPI_MSB_FIRST);
 		LL_SPI_SetDataWidth(spi, LL_SPI_DATAWIDTH_8BIT);
@@ -184,3 +186,14 @@ void DMA1_Channel3_IRQHandler(void) {
         printf("DMA error occurred\n");
     }
 }
+
+void spi_cs2_set_high(void)
+{
+	LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_11);
+}
+
+void spi_cs2_set_low(void)
+{
+	LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_11);
+}
+
