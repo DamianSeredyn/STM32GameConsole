@@ -20,6 +20,7 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
+#include "SD_card.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -111,9 +112,10 @@ int main(void)
 
    MX_TIM2_Init();
 
-   PlayMusic(0);
+   //PlayMusic(0);
 
-
+   SD_card_init();
+   //read_write_test();
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -41,5 +41,7 @@ void spi_init_DMA(void);
 void spi_write_data_dma(uint8_t *data, uint32_t size);
 void spi_dma_transmit_callback(void);
 void spi_dma_receive_callback(void);
+void spi_cs2_set_high(void);
+void spi_cs2_set_low(void);
 
 #endif /* INC_SPI_H_ */
