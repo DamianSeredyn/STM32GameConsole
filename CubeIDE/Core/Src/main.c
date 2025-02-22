@@ -21,6 +21,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "SD_card.h"
+#include "flash.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

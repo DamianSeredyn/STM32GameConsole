@@ -112,6 +112,53 @@ int32_t I2C1_reg_read_it(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_p
 	return 0;
 }
 
+void flash_i2c_write(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size){
+	tx_buffer.data_ptr = data_ptr;
+	tx_buffer.count = size;
+
+	i2c_transfer_complete = false;
+
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, (uint32_t)(size+2), LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+
+	while(LL_I2C_IsActiveFlag_TXIS(I2C1) == 0)
+		;
+
+	LL_I2C_TransmitData8(I2C1, 0x00);
+	LL_I2C_TransmitData8(I2C1, 0x00);
+
+
+	LL_I2C_EnableIT_TX(I2C1);
+	LL_I2C_EnableIT_STOP(I2C1);
+
+	return 0;
+}
+
+void flash_i2c_read(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size){
+	rx_buffer.data_ptr = data_ptr;
+	rx_buffer.count = size;
+
+	i2c_transfer_complete = false;
+
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 2, LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
+
+	while(LL_I2C_IsActiveFlag_TXIS(I2C1) == 0)
+		;
+
+	LL_I2C_TransmitData8(I2C1, 0x00);
+	LL_I2C_TransmitData8(I2C1, 0x00);
+
+	while(LL_I2C_IsActiveFlag_TC(I2C1) == 0)
+		;
+
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, (uint32_t)size, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_READ);
+
+	LL_I2C_EnableIT_RX(I2C1);
+	LL_I2C_EnableIT_STOP(I2C1);
+
+	return 0;
+}
+
+
 void I2C1_it_transmit_callback(void)
 {
 	if(tx_buffer.count > 0)
@@ -157,6 +204,7 @@ void Set_Rx_Buffer(uint8_t *data_ptr, uint16_t size)
 }
 void I2C1_EV_IRQHandler(void)
 {
+	rx_buffer.count = rx_buffer.count ;
 	if(LL_I2C_IsActiveFlag_TXIS(I2C1) && LL_I2C_IsEnabledIT_TX(I2C1))
 	{
 		I2C1_it_transmit_callback();

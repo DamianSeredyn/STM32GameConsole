@@ -50,6 +50,8 @@ typedef struct
 
 extern volatile bool i2c_transfer_complete;
 
+
+
 /* USER CODE END Private defines */
 
 void MX_I2C1_Init(void);
@@ -75,6 +77,12 @@ int32_t I2C1_reg_read_it(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_p
  * @param size Size of data_ptr
  */
 int32_t I2C1_reg_write_it(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size);
+
+
+
+
+void flash_i2c_read(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size);
+void flash_i2c_write(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size);
 
 /* USER CODE END Prototypes */
 
