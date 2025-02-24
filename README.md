@@ -1,5 +1,10 @@
+## Specification
+- microcontoler STM32L476
+- LCD resistive touch screen TFT 4 Waveshare 13587
 ## Pinout
  ### Microcontoler   
+  ### SPI/touch screen
+ - ALL female goldpins RESERVED
  ##### SPI/SC_CARD
 - MISO --> PB_14
 - MOSI --> PB_15
