@@ -15,3 +15,6 @@
 ## UART console command list
 - !help --> show all of avalible commands.
 - !display --> The !display function is used to control the display screen.
+
+## Power
+- SD_card - 5V
