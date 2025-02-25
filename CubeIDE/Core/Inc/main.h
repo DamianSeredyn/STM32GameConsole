@@ -58,7 +58,7 @@ extern "C" {
 #include "led_display.h"
 #include "usart_console.h"
 #include "ext_buttons.h"
-
+#include "dynamic_leds.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
