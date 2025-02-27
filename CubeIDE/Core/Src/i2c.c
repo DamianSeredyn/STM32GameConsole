@@ -130,7 +130,7 @@ void flash_i2c_write(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, 
 	LL_I2C_EnableIT_TX(I2C1);
 	LL_I2C_EnableIT_STOP(I2C1);
 
-	return 0;
+
 }
 
 void flash_i2c_read(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, uint16_t size){
@@ -155,7 +155,7 @@ void flash_i2c_read(uint16_t slave_addr, uint16_t reg_addr, uint8_t *data_ptr, u
 	LL_I2C_EnableIT_RX(I2C1);
 	LL_I2C_EnableIT_STOP(I2C1);
 
-	return 0;
+
 }
 
 

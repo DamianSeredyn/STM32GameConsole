@@ -98,21 +98,31 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+
   /* USER CODE BEGIN 2 */
    InitRingbuffer();
    MX_I2C1_Init();
-
-   SPI_ILI9486_init();
-   spi_init_DMA();
    LL_mDelay(100);
+   SPI_ILI9486_init();
+
    LCD_SCAN_DIR Lcd_ScanDir = D2U_L2R;
    ILI9486_Init(Lcd_ScanDir);
+
    BUTTON_EXTI_Init();
+
    MX_SPI2_Init();
    spi_init_interupts();
 
    MX_TIM2_Init();
+   MX_TIM4_Init();
 
+   spi_init_DMA();
+   DMA_TIM4_Init();
+
+   LL_mDelay(100);
+
+   dynamic_Leds_Setup();
+   dynamic_Leds_Test();
    //PlayMusic(0);
 
    SD_card_init();
