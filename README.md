@@ -1,6 +1,7 @@
 ## Specification
 - microcontoler STM32L476
 - LCD resistive touch screen TFT 4 Waveshare 13587
+- 2x  LED RGB 8 x WS2812 5050
 ## Pinout
  ### Microcontoler   
   ##### SPI/touch screen
@@ -10,8 +11,8 @@
 - MOSI --> PB_15
 - SCK  --> PB_13
 - CS --> PB_11
-
-
+##### RGB LEDs
+- TIM4-CH1  --> PB_6
 ## UART console command list
 - !help --> show all of avalible commands.
 - !display --> The !display function is used to control the display screen.
