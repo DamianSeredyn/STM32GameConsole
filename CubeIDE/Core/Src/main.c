@@ -117,10 +117,11 @@ int main(void)
    MX_TIM4_Init();
 
    spi_init_DMA();
-   //DMA_TIM4_Init();
+   DMA_TIM4_Init();
 
    LL_mDelay(100);
 
+   dynamic_Leds_Setup();
    dynamic_Leds_Test();
    //PlayMusic(0);
 
