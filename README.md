@@ -2,6 +2,7 @@
 - microcontoler STM32L476
 - LCD resistive touch screen TFT 4 Waveshare 13587
 - 2x  LED RGB 8 x WS2812 5050
+- buzzer with BJT
 ## Pinout
  ### Microcontoler   
   ##### SPI/touch screen
@@ -13,6 +14,8 @@
 - CS --> PB_11
 ##### RGB LEDs
 - TIM4-CH1  --> PB_6
+##### Buzzer 
+- TIM4-CH1  --> PA_0
 ## UART console command list
 - !help --> show all of avalible commands.
 - !display --> The !display function is used to control the display screen.
