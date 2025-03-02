@@ -16,6 +16,9 @@
 - TIM4-CH1  --> PB_6
 ##### Buzzer 
 - TIM4-CH1  --> PA_0
+##### I2C
+- I2C1_SCL --> PB_8
+- I2C1_SDA --> PB_9
 ## UART console command list
 - !help --> show all of avalible commands.
 - !display --> The !display function is used to control the display screen.
