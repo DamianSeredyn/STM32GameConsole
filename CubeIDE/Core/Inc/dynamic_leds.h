@@ -11,7 +11,7 @@
 #include "main.h"
 #include "math.h"
 
-#define LED_NUMBER 7
+#define LED_NUMBER 8
 
 
 void MX_TIM4_Init(void);
