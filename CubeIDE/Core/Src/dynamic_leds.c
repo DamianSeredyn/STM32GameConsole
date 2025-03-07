@@ -135,3 +135,9 @@ void SetColorOnLed(uint8_t LEDnumber, uint8_t R, uint8_t G, uint8_t B)
 
 
 	}
+
+void DynamicLedLinker()
+{
+
+}
+}
