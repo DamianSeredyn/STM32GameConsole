@@ -7,94 +7,47 @@
 
 #include "buzzer.h"
 
-const uint32_t melody[] = {
-		 NOTE_E5, 4,  NOTE_B4,8,  NOTE_C5,8,  NOTE_D5,4,  NOTE_C5,8,  NOTE_B4,8,
-		  NOTE_A4, 4,  NOTE_A4,8,  NOTE_C5,8,  NOTE_E5,4,  NOTE_D5,8,  NOTE_C5,8,
-		  NOTE_B4, 4,  NOTE_C5,8,  NOTE_D5,4,  NOTE_E5,4,
-		  NOTE_C5, 4,  NOTE_A4,4,  NOTE_A4,8,  NOTE_A4,4,  NOTE_B4,8,  NOTE_C5,8,
-
-		  NOTE_D5, -4,  NOTE_F5,8,  NOTE_A5,4,  NOTE_G5,8,  NOTE_F5,8,
-		  NOTE_E5, 4,  NOTE_C5,8,  NOTE_E5,4,  NOTE_D5,8,  NOTE_C5,8,
-		  NOTE_B4, 4,  NOTE_B4,8,  NOTE_C5,8,  NOTE_D5,4,  NOTE_E5,4,
-		  NOTE_C5, 4,  NOTE_A4,4,  NOTE_A4,4, 0, 4,
-
-		  NOTE_E5, 4,  NOTE_B4,8,  NOTE_C5,8,  NOTE_D5,4,  NOTE_C5,8,  NOTE_B4,8,
-		  NOTE_A4, 4,  NOTE_A4,8,  NOTE_C5,8,  NOTE_E5,4,  NOTE_D5,8,  NOTE_C5,8,
-		  NOTE_B4, 4,  NOTE_C5,8,  NOTE_D5,4,  NOTE_E5,4,
-		  NOTE_C5, 4,  NOTE_A4,4,  NOTE_A4,8,  NOTE_A4,4,  NOTE_B4,8,  NOTE_C5,8,
-
-		  NOTE_D5, -4,  NOTE_F5,8,  NOTE_A5,4,  NOTE_G5,8,  NOTE_F5,8,
-		  NOTE_E5, -4,  NOTE_C5,8,  NOTE_E5,4,  NOTE_D5,8,  NOTE_C5,8,
-		  NOTE_B4, 4,  NOTE_B4,8,  NOTE_C5,8,  NOTE_D5,4,  NOTE_E5,4,
-		  NOTE_C5, 4,  NOTE_A4,4,  NOTE_A4,4, 0, 4,
-
-
-		  NOTE_E5,2,  NOTE_C5,2,
-		  NOTE_D5,2,   NOTE_B4,2,
-		  NOTE_C5,2,   NOTE_A4,2,
-		  NOTE_GS4,2,  NOTE_B4,4,  0,8,
-		  NOTE_E5,2,   NOTE_C5,2,
-		  NOTE_D5,2,   NOTE_B4,2,
-		  NOTE_C5,4,   NOTE_E5,4,  NOTE_A5,2,
-		  NOTE_GS5,2,
+uint16_t melody[] = {
+    262, // C4 (do)
+    294, // D4 (re)
+    330, // E4 (mi)
+    349, // F4 (fa)
+    392, // G4 (sol)
+    440, // A4 (la)
+    494, // B4 (si)
+    523,
+	0// C5 (do - oktawa wyżej)
+};
+uint16_t durations[] = {
+    500, 500, 500, 500, 500, 500, 500, 500
 };
 
 
-
-
-
-const uint32_t melodySizes[] ={sizeof(melody)/sizeof(uint32_t)};
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CalculateFreq(uint32_t newFreq)
+uint16_t freq[9] = {0};
+uint16_t duty[9] = {0};
+void MusicTest(void)
 {
-	uint64_t tempFreq = newFreq;
-		if(newFreq == 0) tempFreq = 1;
-
-		uint64_t tempNewValue = (uint64_t) CPU_FREQ / PRESCALER / tempFreq;
-
-		TIM2 ->ARR = (uint32_t)tempNewValue;
-		TIM2 -> CCR1 = (uint32_t)tempNewValue/2;
+	for (int i = 0; i < 9; i++) {
+		freq[i]  = (1000000 / melody[i]);
+		duty[i]  = (1000000 / melody[i])/2;
+	}
+	TIM2->CCR1 = 1908;
+	GenerateMusicToDma(freq,9,duty,9);
 }
 
 
-void PlayMusic(uint8_t audio_id)
-{
-	  TIM2 -> CR1 |= TIM_CR1_CEN;
-	  TIM2 ->CCER |= TIM_CCER_CC1E;
-
-
-		  for(int noteIndex = 0; noteIndex < melodySizes[0]-1; noteIndex += 2)
-	  	  {
-			  CalculateFreq(melody[noteIndex]);
-		  	  LL_mDelay(90*6);
-	  	}
-	   TIM2 -> CR1 &= ~TIM_CR1_CEN;
-	   TIM2 ->CCER &= ~TIM_CCER_CC1E;
+void playNote(uint16_t frequency) {
+        uint32_t ARR = (1000000 / frequency);
 }
 
 
+void GenerateMusicToDma(uint16_t* data,uint32_t size,uint16_t* CCR1,uint32_t sizeCCR1)
+{
 
+	LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_5, (uint32_t)data, (uint32_t)&TIM2->ARR, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, size);
 
+	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_5);
+	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_5);
 
-
-
-
-
-
-
-
-
-
-
+}

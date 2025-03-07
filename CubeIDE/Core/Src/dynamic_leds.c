@@ -43,6 +43,8 @@ void MX_TIM4_Init(void)
    LL_TIM_SetTriggerOutput(TIM4, LL_TIM_TRGO_RESET);
    LL_TIM_DisableMasterSlaveMode(TIM4);
 
+   TIM4->CCR1 = 12-1;
+
   GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -77,8 +79,8 @@ void DMA_TIM4_Init(void) {
 void DMA1_Channel1_IRQHandler(void){
 	if(LL_DMA_IsActiveFlag_TC1(DMA1) == 1){
 		LL_DMA_ClearFlag_TC1(DMA1);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_6);
-		LL_DMA_DisableIT_TC(DMA1, LL_DMA_CHANNEL_6);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_1);
+		LL_DMA_DisableIT_TC(DMA1, LL_DMA_CHANNEL_1);
 	}
 	else if(LL_DMA_IsActiveFlag_TE1(DMA1)){
 
@@ -105,7 +107,7 @@ void dynamic_Leds_Test(void)
 	SetColorOnLed(7,0,255,0);
 	GenerateDataToDma(LED_Data,50+LED_NUMBER*3*8+50);
 	SetColorOnLed(0,0,255,0);
-	LL_mDelay(50);
+	LL_mDelay(1000);
 	GenerateDataToDma(LED_Data,50+LED_NUMBER*3*8+50);
 
 }

@@ -118,12 +118,13 @@ int main(void)
 
    spi_init_DMA();
    DMA_TIM4_Init();
+   TIM2_Init_Dma();
 
    LL_mDelay(100);
 
    dynamic_Leds_Setup();
    dynamic_Leds_Test();
-   //PlayMusic(0);
+   MusicTest();
 
    SD_card_init();
    //read_write_test();

@@ -15,4 +15,5 @@
 #define TIM2_CH1_OC_Port GPIOA
 
   void MX_TIM2_Init(void);
+  void TIM2_Init_Dma(void);
 #endif /* INC_TIM_H_ */
