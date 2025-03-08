@@ -118,7 +118,6 @@ int main(void)
 
    spi_init_DMA();
    DMA_TIM4_Init();
-   TIM2_Init_Dma();
 
    LL_mDelay(100);
 

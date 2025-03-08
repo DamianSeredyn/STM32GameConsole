@@ -53,7 +53,6 @@ extern "C" {
 #include "usart.h"
 #include "i2c.h"
 #include "spi.h"
-#include "Tim.h"
 #include "buzzer.h"
 #include "led_display.h"
 #include "usart_console.h"

@@ -14,9 +14,24 @@ extern "C" {
 
 #include "main.h"
 
-void playNote(uint16_t frequency);
+typedef struct {
+    uint16_t freq[128];
+    uint16_t musicDuration;
+    uint16_t currentNote;
+    uint8_t isPlaying;
+    uint8_t noteDuration;
+    uint8_t delayBetweenNotes;
+} MusicBuffer;
+
+
+
+#define TIM2_CH1_OC_Pin LL_GPIO_PIN_0
+#define TIM2_CH1_OC_Port GPIOA
+
+
+
+void MX_TIM2_Init(void);
 void MusicTest(void);
-void GenerateMusicToDma(uint16_t* data,uint32_t size,uint16_t* CCR1,uint32_t sizeCCR1);
 #ifdef __cplusplus
 }
 #endif
