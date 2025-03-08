@@ -123,7 +123,7 @@ int main(void)
 
    dynamic_Leds_Setup();
    dynamic_Leds_Test();
-   //PlayMusic(0);
+   MusicTest();
 
    SD_card_init();
    //read_write_test();

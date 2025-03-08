@@ -39,7 +39,6 @@ extern "C" {
 #include "usart.h"
 #include "i2c.h"
 #include "spi.h"
-#include "Tim.h"
 #include "main.h"
 #include "usart.h"
 #include <string.h>
