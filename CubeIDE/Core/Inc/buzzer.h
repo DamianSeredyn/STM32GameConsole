@@ -13,6 +13,8 @@ extern "C" {
 #endif
 
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
     uint16_t freq[128];
